@@ -10,6 +10,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__, static_folder=os.path.join(ROOT, 'public'), static_url_path='/public')
 app.config.from_object('config')
+#app.debug = True
 
 @app.route('/', methods=['GET','POST'])
 def upload():
@@ -36,18 +37,20 @@ def convert_file(infile):
 	outfile = StringIO.StringIO()
 	transaction_schema = ['!TRNS','DATE','ACCNT','NAME','CLASS','AMOUNT','MEMO']
 	split_schema = ['!SPL','DATE','ACCNT','NAME','AMOUNT','MEMO']
-	writer = csv.writer(outfile, dialect="excel-tab")
+	writer = csv.writer(outfile, dialect="excel-tab", doublequote=False, quotechar="'")
 	writer.writerow(transaction_schema)
 	writer.writerow(split_schema)
 	writer.writerow(['!ENDTRNS'])
+	def quote(string):
+		return '"%s"' % string
 	for row in file_contents:
 		date = datetime.datetime.strptime(row['time'], '%Y-%m-%d %H:%M').strftime('%m/%d/%Y')
 		charge = Decimal(row['amount'])
 		fee = Decimal(row['fee'])
 		total_amount = charge - fee
-		writer.writerow(['TRNS', date, 'gaffta.org', row['card_name'], row['description'], total_amount, row['description']])
-		writer.writerow(['SPL',date,'gaffta.org',row['card_name'],-charge,row['description']])
-		writer.writerow(['SPL',date,'gaffta.org',row['card_name'],'Fee %s' % fee,row['description']])
+		writer.writerow(['TRNS', quote(date), quote('Paypal'), quote(row['card_name']), quote(row['description']), total_amount, quote(row['description'])])
+		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),-charge,row['description']])
+		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),'Fee %s' % fee,quote(row['description'])])
 		writer.writerow(['ENDTRNS'])
 
 	outfile.seek(0)
