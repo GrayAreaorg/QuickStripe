@@ -19,11 +19,12 @@ def upload():
 			bare_filename, extension = os.path.splitext(file.filename)
 			headers.add('Content-Disposition', 'attachment', filename='%s.iif' % bare_filename)
 			return Response(outfile, mimetype='text/iif', headers=headers)
+		else:
+			return Response('sorry charlie', mimetype="text/plain")
 	return render_template('upload.html')
 
 def allowed_file(filename):
-	bare_filename, extension = os.path.splitext(file.filename)
-	return extension in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 def convert_file(infile):
 	file_contents = csv.DictReader(infile)

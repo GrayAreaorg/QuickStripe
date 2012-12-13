@@ -11,13 +11,17 @@
         <meta name="viewport" content="width=device-width">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+        {% if config.debug %}
         <link rel="stylesheet/less" href="{{ url_for('static', filename='css/style.less') }}">
-        <!--build less, then comment out less file-->
-        <!--link rel="stylesheet" href="css/style.css" -->
+        {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        {% endif %}
+        
         {% block js_header %}
         <script src="{{ url_for('static', filename='js/vendor/modernizr-2.6.2.min.js') }}"></script>
+            {% if config.debug %}
         <script src="{{ url_for('static', filename='js/vendor/less-1.3.0.min.js') }}"></script>
+            {% endif %}
         {% endblock %}
     </head>
     <body>
@@ -52,8 +56,20 @@
         <script src="{{ url_for('static', filename='js/vendor/live.js') }}"></script>
         {% endblock %}
         <script type="text/javascript" charset="utf-8">
+        {% if config.debug %}
           less.env = "development";
           less.watch();
+        {% endif %}
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-37026403-1']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
         </script>
     </body>
 </html>
