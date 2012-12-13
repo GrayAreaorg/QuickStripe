@@ -1,1 +1,1 @@
-web: gunicorn app:quickstripe
+web: gunicorn quickstripe:app -w 1

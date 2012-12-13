@@ -7,7 +7,6 @@ import sys, os
 from decimal import Decimal
 import StringIO
 app = Flask(__name__)
-app.debug = True
 app.config.from_object('config')
 
 @app.route('/', methods=['GET','POST'])
