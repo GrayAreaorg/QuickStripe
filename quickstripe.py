@@ -6,7 +6,9 @@ import datetime
 import sys, os
 from decimal import Decimal
 import StringIO
-app = Flask(__name__)
+ROOT = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(__name__, static_folder=os.path.join(ROOT, 'public'), static_url_path='/public')
 app.config.from_object('config')
 
 @app.route('/', methods=['GET','POST'])
