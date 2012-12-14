@@ -13,7 +13,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__, static_folder=os.path.join(ROOT, 'public'), static_url_path='/public')
 app.config.from_object('config')
-app.debug = True
+#app.debug = True
 loc = Babel(app)
 
 def get_locale_from_accept_header():
@@ -59,13 +59,13 @@ def convert_file(infile):
 		charge = Decimal(row['amount'])
 		fee = Decimal(row['fee'])
 		total_amount = charge - fee
-		writer.writerow(['TRNS', quote(date), quote('Paypal'), quote(row['card_name']), quote(row['description']), total_amount, quote(row['description'])])
-		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),-charge,quote(row['description'])])
-		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),'Fee %s' % fee,quote(row['description'])])
-		writer.writerow(['ENDTRNS'])
+		yield writer.writerow(['TRNS', quote(date), quote('Paypal'), quote(row['card_name']), quote(row['description']), total_amount, quote(row['description'])])
+		yield writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),-charge,quote(row['description'])])
+		yield writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),'Fee %s' % fee,quote(row['description'])])
+		yield writer.writerow(['ENDTRNS'])
 
-	outfile.seek(0)
-	return outfile
+	outfile.close()
+	return
 
 if __name__ == '__main__':
 	app.run()
