@@ -63,7 +63,6 @@ def convert_file(infile):
 		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),-charge,quote(row['description'])])
 		writer.writerow(['SPL',quote(date),quote('Paypal'),quote(row['card_name']),'Fee %s' % fee,quote(row['description'])])
 		writer.writerow(['ENDTRNS'])
-
 	outfile.seek(0)
 	return outfile
 
